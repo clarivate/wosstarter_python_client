@@ -88,6 +88,7 @@ The WoS Journals API uses conventional HTTP success or failure status codes. For
 | 404  | Not found  | The resource is not found |
 | 405 | Method not allowed | Method other than GET is not allowed |
 | 50X  | Server errors  | Technical error with servers|
+
 Each error response (except `401 Unauthorized` error) contains the code of the error, the title of the error and detailed description of the error: a misprint in an endpoint, wrong URL parameter, etc. The example of the error message is shown below:
 
 ```json
