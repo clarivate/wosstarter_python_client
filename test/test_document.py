@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# flake8: noqa
 """
     Web of Science™ Starter API
 
@@ -13,19 +12,129 @@
 """  # noqa: E501
 
 
-# import models into model package
-from clarivate.wos_starter.client.models.author_name import AuthorName
+import unittest
+import datetime
+
 from clarivate.wos_starter.client.models.document import Document
-from clarivate.wos_starter.client.models.document_citations_inner import DocumentCitationsInner
-from clarivate.wos_starter.client.models.document_identifiers import DocumentIdentifiers
-from clarivate.wos_starter.client.models.document_keywords import DocumentKeywords
-from clarivate.wos_starter.client.models.document_links import DocumentLinks
-from clarivate.wos_starter.client.models.document_names import DocumentNames
-from clarivate.wos_starter.client.models.document_source import DocumentSource
-from clarivate.wos_starter.client.models.document_source_pages import DocumentSourcePages
-from clarivate.wos_starter.client.models.documents_list import DocumentsList
-from clarivate.wos_starter.client.models.journal import Journal
-from clarivate.wos_starter.client.models.journal_links_inner import JournalLinksInner
-from clarivate.wos_starter.client.models.journals_list import JournalsList
-from clarivate.wos_starter.client.models.metadata import Metadata
-from clarivate.wos_starter.client.models.other_name import OtherName
+
+class TestDocument(unittest.TestCase):
+    """Document unit test stubs"""
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def make_instance(self, include_optional) -> Document:
+        """Test Document
+            include_option is a boolean, when False only required
+            params are included, when True both required and
+            optional params are included """
+        # uncomment below to create an instance of `Document`
+        """
+        model = Document()
+        if include_optional:
+            return Document(
+                uid = '',
+                title = '',
+                types = [
+                    ''
+                    ],
+                source_types = [
+                    ''
+                    ],
+                source = clarivate.wos_starter.client.models.document_source.Document_source(
+                    source_title = '', 
+                    publish_year = 56, 
+                    publish_month = '', 
+                    volume = '', 
+                    issue = '', 
+                    supplement = '', 
+                    special_issue = '', 
+                    article_number = '', 
+                    pages = clarivate.wos_starter.client.models.document_source_pages.Document_source_pages(
+                        range = '', 
+                        begin = '', 
+                        end = '', 
+                        count = 56, ), ),
+                names = clarivate.wos_starter.client.models.document_names.Document_names(
+                    authors = [
+                        clarivate.wos_starter.client.models.author_name.AuthorName(
+                            display_name = '', 
+                            wos_standard = '', 
+                            researcher_id = '', )
+                        ], 
+                    inventors = [
+                        clarivate.wos_starter.client.models.other_name.OtherName(
+                            display_name = '', )
+                        ], 
+                    book_corp = [
+                        clarivate.wos_starter.client.models.other_name.OtherName(
+                            display_name = '', )
+                        ], 
+                    book_editors = [
+                        
+                        ], 
+                    books = [
+                        
+                        ], 
+                    additional_authors = [
+                        
+                        ], 
+                    anonymous = [
+                        
+                        ], 
+                    assignees = [
+                        
+                        ], 
+                    corp = [
+                        
+                        ], 
+                    editors = [
+                        
+                        ], 
+                    investigators = [
+                        
+                        ], 
+                    sponsors = [
+                        
+                        ], 
+                    issuing_organizations = [
+                        
+                        ], ),
+                links = clarivate.wos_starter.client.models.document_links.Document_links(
+                    record = '', 
+                    citing_articles = '', 
+                    references = '', 
+                    related = '', ),
+                citations = [
+                    clarivate.wos_starter.client.models.document_citations_inner.Document_citations_inner(
+                        db = 'WOS', 
+                        count = 56, )
+                    ],
+                identifiers = clarivate.wos_starter.client.models.document_identifiers.Document_identifiers(
+                    doi = '', 
+                    issn = '', 
+                    eissn = '', 
+                    isbn = '', 
+                    eisbn = '', 
+                    pmid = '', ),
+                keywords = clarivate.wos_starter.client.models.document_keywords.Document_keywords(
+                    author_keywords = [
+                        ''
+                        ], )
+            )
+        else:
+            return Document(
+                uid = '',
+        )
+        """
+
+    def testDocument(self):
+        """Test Document"""
+        # inst_req_only = self.make_instance(include_optional=False)
+        # inst_req_and_optional = self.make_instance(include_optional=True)
+
+if __name__ == '__main__':
+    unittest.main()

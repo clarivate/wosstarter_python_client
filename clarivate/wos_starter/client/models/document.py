@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# flake8: noqa
 """
     Web of Science™ Starter API
 
@@ -13,19 +12,124 @@
 """  # noqa: E501
 
 
-# import models into model package
-from clarivate.wos_starter.client.models.author_name import AuthorName
-from clarivate.wos_starter.client.models.document import Document
+from __future__ import annotations
+import pprint
+import re  # noqa: F401
+import json
+
+
+from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, StrictStr
+from pydantic import Field
 from clarivate.wos_starter.client.models.document_citations_inner import DocumentCitationsInner
 from clarivate.wos_starter.client.models.document_identifiers import DocumentIdentifiers
 from clarivate.wos_starter.client.models.document_keywords import DocumentKeywords
 from clarivate.wos_starter.client.models.document_links import DocumentLinks
 from clarivate.wos_starter.client.models.document_names import DocumentNames
 from clarivate.wos_starter.client.models.document_source import DocumentSource
-from clarivate.wos_starter.client.models.document_source_pages import DocumentSourcePages
-from clarivate.wos_starter.client.models.documents_list import DocumentsList
-from clarivate.wos_starter.client.models.journal import Journal
-from clarivate.wos_starter.client.models.journal_links_inner import JournalLinksInner
-from clarivate.wos_starter.client.models.journals_list import JournalsList
-from clarivate.wos_starter.client.models.metadata import Metadata
-from clarivate.wos_starter.client.models.other_name import OtherName
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
+class Document(BaseModel):
+    """
+    Document
+    """ # noqa: E501
+    uid: StrictStr = Field(description="Web of Science Unique Identifier")
+    title: Optional[StrictStr] = Field(default=None, description="Document title")
+    types: Optional[List[StrictStr]] = Field(default=None, description="Normalized Document Types")
+    source_types: Optional[List[StrictStr]] = Field(default=None, description="Source Document Types", alias="sourceTypes")
+    source: Optional[DocumentSource] = None
+    names: Optional[DocumentNames] = None
+    links: Optional[DocumentLinks] = None
+    citations: Optional[List[DocumentCitationsInner]] = Field(default=None, description="Times Cited")
+    identifiers: Optional[DocumentIdentifiers] = None
+    keywords: Optional[DocumentKeywords] = None
+    __properties: ClassVar[List[str]] = ["uid", "title", "types", "sourceTypes", "source", "names", "links", "citations", "identifiers", "keywords"]
+
+    model_config = {
+        "populate_by_name": True,
+        "validate_assignment": True,
+        "protected_namespaces": (),
+    }
+
+
+    def to_str(self) -> str:
+        """Returns the string representation of the model using alias"""
+        return pprint.pformat(self.model_dump(by_alias=True))
+
+    def to_json(self) -> str:
+        """Returns the JSON representation of the model using alias"""
+        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    def from_json(cls, json_str: str) -> Self:
+        """Create an instance of Document from a JSON string"""
+        return cls.from_dict(json.loads(json_str))
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return the dictionary representation of the model using alias.
+
+        This has the following differences from calling pydantic's
+        `self.model_dump(by_alias=True)`:
+
+        * `None` is only added to the output dict for nullable fields that
+          were set at model initialization. Other fields with value `None`
+          are ignored.
+        """
+        _dict = self.model_dump(
+            by_alias=True,
+            exclude={
+            },
+            exclude_none=True,
+        )
+        # override the default output from pydantic by calling `to_dict()` of source
+        if self.source:
+            _dict['source'] = self.source.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of names
+        if self.names:
+            _dict['names'] = self.names.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of links
+        if self.links:
+            _dict['links'] = self.links.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in citations (list)
+        _items = []
+        if self.citations:
+            for _item in self.citations:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict['citations'] = _items
+        # override the default output from pydantic by calling `to_dict()` of identifiers
+        if self.identifiers:
+            _dict['identifiers'] = self.identifiers.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of keywords
+        if self.keywords:
+            _dict['keywords'] = self.keywords.to_dict()
+        return _dict
+
+    @classmethod
+    def from_dict(cls, obj: Dict) -> Self:
+        """Create an instance of Document from a dict"""
+        if obj is None:
+            return None
+
+        if not isinstance(obj, dict):
+            return cls.model_validate(obj)
+
+        _obj = cls.model_validate({
+            "uid": obj.get("uid"),
+            "title": obj.get("title"),
+            "types": obj.get("types"),
+            "sourceTypes": obj.get("sourceTypes"),
+            "source": DocumentSource.from_dict(obj.get("source")) if obj.get("source") is not None else None,
+            "names": DocumentNames.from_dict(obj.get("names")) if obj.get("names") is not None else None,
+            "links": DocumentLinks.from_dict(obj.get("links")) if obj.get("links") is not None else None,
+            "citations": [DocumentCitationsInner.from_dict(_item) for _item in obj.get("citations")] if obj.get("citations") is not None else None,
+            "identifiers": DocumentIdentifiers.from_dict(obj.get("identifiers")) if obj.get("identifiers") is not None else None,
+            "keywords": DocumentKeywords.from_dict(obj.get("keywords")) if obj.get("keywords") is not None else None
+        })
+        return _obj
+
+
