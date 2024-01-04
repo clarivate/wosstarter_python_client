@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# flake8: noqa
 """
     Web of Science™ Starter API
 
@@ -13,19 +12,43 @@
 """  # noqa: E501
 
 
-# import models into model package
-from clarivate.wos_starter.client.models.author_name import AuthorName
-from clarivate.wos_starter.client.models.document import Document
-from clarivate.wos_starter.client.models.document_citations_inner import DocumentCitationsInner
-from clarivate.wos_starter.client.models.document_identifiers import DocumentIdentifiers
+import unittest
+import datetime
+
 from clarivate.wos_starter.client.models.document_keywords import DocumentKeywords
-from clarivate.wos_starter.client.models.document_links import DocumentLinks
-from clarivate.wos_starter.client.models.document_names import DocumentNames
-from clarivate.wos_starter.client.models.document_source import DocumentSource
-from clarivate.wos_starter.client.models.document_source_pages import DocumentSourcePages
-from clarivate.wos_starter.client.models.documents_list import DocumentsList
-from clarivate.wos_starter.client.models.journal import Journal
-from clarivate.wos_starter.client.models.journal_links_inner import JournalLinksInner
-from clarivate.wos_starter.client.models.journals_list import JournalsList
-from clarivate.wos_starter.client.models.metadata import Metadata
-from clarivate.wos_starter.client.models.other_name import OtherName
+
+class TestDocumentKeywords(unittest.TestCase):
+    """DocumentKeywords unit test stubs"""
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def make_instance(self, include_optional) -> DocumentKeywords:
+        """Test DocumentKeywords
+            include_option is a boolean, when False only required
+            params are included, when True both required and
+            optional params are included """
+        # uncomment below to create an instance of `DocumentKeywords`
+        """
+        model = DocumentKeywords()
+        if include_optional:
+            return DocumentKeywords(
+                author_keywords = [
+                    ''
+                    ]
+            )
+        else:
+            return DocumentKeywords(
+        )
+        """
+
+    def testDocumentKeywords(self):
+        """Test DocumentKeywords"""
+        # inst_req_only = self.make_instance(include_optional=False)
+        # inst_req_and_optional = self.make_instance(include_optional=True)
+
+if __name__ == '__main__':
+    unittest.main()

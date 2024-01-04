@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# flake8: noqa
 """
     Web of Science™ Starter API
 
@@ -13,19 +12,98 @@
 """  # noqa: E501
 
 
-# import models into model package
-from clarivate.wos_starter.client.models.author_name import AuthorName
-from clarivate.wos_starter.client.models.document import Document
-from clarivate.wos_starter.client.models.document_citations_inner import DocumentCitationsInner
-from clarivate.wos_starter.client.models.document_identifiers import DocumentIdentifiers
-from clarivate.wos_starter.client.models.document_keywords import DocumentKeywords
-from clarivate.wos_starter.client.models.document_links import DocumentLinks
-from clarivate.wos_starter.client.models.document_names import DocumentNames
-from clarivate.wos_starter.client.models.document_source import DocumentSource
+from __future__ import annotations
+import pprint
+import re  # noqa: F401
+import json
+
+
+from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, StrictInt, StrictStr
+from pydantic import Field
 from clarivate.wos_starter.client.models.document_source_pages import DocumentSourcePages
-from clarivate.wos_starter.client.models.documents_list import DocumentsList
-from clarivate.wos_starter.client.models.journal import Journal
-from clarivate.wos_starter.client.models.journal_links_inner import JournalLinksInner
-from clarivate.wos_starter.client.models.journals_list import JournalsList
-from clarivate.wos_starter.client.models.metadata import Metadata
-from clarivate.wos_starter.client.models.other_name import OtherName
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
+class DocumentSource(BaseModel):
+    """
+    Web of Science document source metadata
+    """ # noqa: E501
+    source_title: Optional[StrictStr] = Field(default=None, description="Source title", alias="sourceTitle")
+    publish_year: Optional[StrictInt] = Field(default=None, description="Published Year", alias="publishYear")
+    publish_month: Optional[StrictStr] = Field(default=None, description="Published Month", alias="publishMonth")
+    volume: Optional[StrictStr] = Field(default=None, description="Volume")
+    issue: Optional[StrictStr] = Field(default=None, description="Issue")
+    supplement: Optional[StrictStr] = Field(default=None, description="Journal supplement")
+    special_issue: Optional[StrictStr] = Field(default=None, description="Journal special issue", alias="specialIssue")
+    article_number: Optional[StrictStr] = Field(default=None, description="Source Article Number", alias="articleNumber")
+    pages: Optional[DocumentSourcePages] = None
+    __properties: ClassVar[List[str]] = ["sourceTitle", "publishYear", "publishMonth", "volume", "issue", "supplement", "specialIssue", "articleNumber", "pages"]
+
+    model_config = {
+        "populate_by_name": True,
+        "validate_assignment": True,
+        "protected_namespaces": (),
+    }
+
+
+    def to_str(self) -> str:
+        """Returns the string representation of the model using alias"""
+        return pprint.pformat(self.model_dump(by_alias=True))
+
+    def to_json(self) -> str:
+        """Returns the JSON representation of the model using alias"""
+        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    def from_json(cls, json_str: str) -> Self:
+        """Create an instance of DocumentSource from a JSON string"""
+        return cls.from_dict(json.loads(json_str))
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return the dictionary representation of the model using alias.
+
+        This has the following differences from calling pydantic's
+        `self.model_dump(by_alias=True)`:
+
+        * `None` is only added to the output dict for nullable fields that
+          were set at model initialization. Other fields with value `None`
+          are ignored.
+        """
+        _dict = self.model_dump(
+            by_alias=True,
+            exclude={
+            },
+            exclude_none=True,
+        )
+        # override the default output from pydantic by calling `to_dict()` of pages
+        if self.pages:
+            _dict['pages'] = self.pages.to_dict()
+        return _dict
+
+    @classmethod
+    def from_dict(cls, obj: Dict) -> Self:
+        """Create an instance of DocumentSource from a dict"""
+        if obj is None:
+            return None
+
+        if not isinstance(obj, dict):
+            return cls.model_validate(obj)
+
+        _obj = cls.model_validate({
+            "sourceTitle": obj.get("sourceTitle"),
+            "publishYear": obj.get("publishYear"),
+            "publishMonth": obj.get("publishMonth"),
+            "volume": obj.get("volume"),
+            "issue": obj.get("issue"),
+            "supplement": obj.get("supplement"),
+            "specialIssue": obj.get("specialIssue"),
+            "articleNumber": obj.get("articleNumber"),
+            "pages": DocumentSourcePages.from_dict(obj.get("pages")) if obj.get("pages") is not None else None
+        })
+        return _obj
+
+

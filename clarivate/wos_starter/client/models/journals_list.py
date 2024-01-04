@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# flake8: noqa
 """
     Web of Science™ Starter API
 
@@ -13,19 +12,91 @@
 """  # noqa: E501
 
 
-# import models into model package
-from clarivate.wos_starter.client.models.author_name import AuthorName
-from clarivate.wos_starter.client.models.document import Document
-from clarivate.wos_starter.client.models.document_citations_inner import DocumentCitationsInner
-from clarivate.wos_starter.client.models.document_identifiers import DocumentIdentifiers
-from clarivate.wos_starter.client.models.document_keywords import DocumentKeywords
-from clarivate.wos_starter.client.models.document_links import DocumentLinks
-from clarivate.wos_starter.client.models.document_names import DocumentNames
-from clarivate.wos_starter.client.models.document_source import DocumentSource
-from clarivate.wos_starter.client.models.document_source_pages import DocumentSourcePages
-from clarivate.wos_starter.client.models.documents_list import DocumentsList
+from __future__ import annotations
+import pprint
+import re  # noqa: F401
+import json
+
+
+from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel
 from clarivate.wos_starter.client.models.journal import Journal
-from clarivate.wos_starter.client.models.journal_links_inner import JournalLinksInner
-from clarivate.wos_starter.client.models.journals_list import JournalsList
 from clarivate.wos_starter.client.models.metadata import Metadata
-from clarivate.wos_starter.client.models.other_name import OtherName
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
+class JournalsList(BaseModel):
+    """
+    JournalsList
+    """ # noqa: E501
+    metadata: Optional[Metadata] = None
+    hits: Optional[List[Journal]] = None
+    __properties: ClassVar[List[str]] = ["metadata", "hits"]
+
+    model_config = {
+        "populate_by_name": True,
+        "validate_assignment": True,
+        "protected_namespaces": (),
+    }
+
+
+    def to_str(self) -> str:
+        """Returns the string representation of the model using alias"""
+        return pprint.pformat(self.model_dump(by_alias=True))
+
+    def to_json(self) -> str:
+        """Returns the JSON representation of the model using alias"""
+        # TODO: pydantic v2: use .model_dump_json(by_alias=True, exclude_unset=True) instead
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    def from_json(cls, json_str: str) -> Self:
+        """Create an instance of JournalsList from a JSON string"""
+        return cls.from_dict(json.loads(json_str))
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return the dictionary representation of the model using alias.
+
+        This has the following differences from calling pydantic's
+        `self.model_dump(by_alias=True)`:
+
+        * `None` is only added to the output dict for nullable fields that
+          were set at model initialization. Other fields with value `None`
+          are ignored.
+        """
+        _dict = self.model_dump(
+            by_alias=True,
+            exclude={
+            },
+            exclude_none=True,
+        )
+        # override the default output from pydantic by calling `to_dict()` of metadata
+        if self.metadata:
+            _dict['metadata'] = self.metadata.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in hits (list)
+        _items = []
+        if self.hits:
+            for _item in self.hits:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict['hits'] = _items
+        return _dict
+
+    @classmethod
+    def from_dict(cls, obj: Dict) -> Self:
+        """Create an instance of JournalsList from a dict"""
+        if obj is None:
+            return None
+
+        if not isinstance(obj, dict):
+            return cls.model_validate(obj)
+
+        _obj = cls.model_validate({
+            "metadata": Metadata.from_dict(obj.get("metadata")) if obj.get("metadata") is not None else None,
+            "hits": [Journal.from_dict(_item) for _item in obj.get("hits")] if obj.get("hits") is not None else None
+        })
+        return _obj
+
+
