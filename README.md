@@ -164,7 +164,7 @@ from pprint import pprint
 # Defining the host is optional and defaults to http://api.clarivate.com/apis/wos-starter/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = clarivate.wos_starter.client.Configuration(
-    host = "http://api.clarivate.com/apis/wos-starter/v1"
+    host = "https://api.clarivate.com/apis/wos-starter/v1"
 )
 
 # The client must configure the authentication and authorization parameters
